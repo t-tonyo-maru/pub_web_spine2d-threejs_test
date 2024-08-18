@@ -52,7 +52,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1.0)
 scene.add(ambientLight)
 
 // スポットライト
-const spotLight = new THREE.SpotLight(0xffffff, 48, 12, Math.PI / 4, 10, 0.5)
+const spotLight = new THREE.SpotLight(0xffffff, 48, 32, Math.PI / 4, 10, 0.5)
 spotLight.position.set(0, 8, 0)
 spotLight.castShadow = true
 spotLight.shadow.mapSize.set(4096, 4096)
@@ -71,6 +71,26 @@ spotLightFolder
   .add({ intensity: 48 }, 'intensity', 12, 200, 0.1)
   .onChange((value: number) => {
     spotLight.intensity = value
+  })
+spotLightFolder
+  .add({ distance: 32 }, 'distance', 12, 60, 0.1)
+  .onChange((value: number) => {
+    spotLight.distance = value
+  })
+spotLightFolder
+  .add({ positionX: 0 }, 'positionX', -10, 10, 0.1)
+  .onChange((value: number) => {
+    spotLight.position.x = value
+  })
+spotLightFolder
+  .add({ positionY: 8 }, 'positionY', 0, 20, 0.1)
+  .onChange((value: number) => {
+    spotLight.position.y = value
+  })
+spotLightFolder
+  .add({ positionZ: 0 }, 'positionZ', -10, 10, 0.1)
+  .onChange((value: number) => {
+    spotLight.position.z = value
   })
 spotLightFolder
   .add({ showLight: true }, 'showLight')
@@ -184,9 +204,12 @@ const ticker = () => {
     isAddedSpine = true
   }
 
+  // box 回転
   box.rotation.x += 0.01
   box.rotation.y += 0.01
   box.rotation.z += 0.01
+
+  spotLight.lookAt(new THREE.Vector3(0, 0, 0))
 
   // Spine Skeleton　更新
   // ※Spine の SkeletonMesh は update() を呼び出さないとアニメーションが再生されない
