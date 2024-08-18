@@ -113,6 +113,23 @@ const box = new THREE.Mesh(boxGeometry, boxMaterial)
 box.position.set(-1.5, 3, 0)
 box.castShadow = true
 scene.add(box)
+// 立方体 lil-gui
+const boxFolder = gui.addFolder('BoxFolder')
+boxFolder
+  .add({ positionX: -1.5 }, 'positionX', -10, 10, 0.001)
+  .onChange((value: number) => {
+    box.position.x = value
+  })
+boxFolder
+  .add({ positionY: 3 }, 'positionY', 0, 20, 0.001)
+  .onChange((value: number) => {
+    box.position.y = value
+  })
+boxFolder
+  .add({ positionZ: 0 }, 'positionZ', -10, 10, 0.001)
+  .onChange((value: number) => {
+    box.position.z = value
+  })
 
 // Spine
 let isAddedSpine = false
@@ -122,7 +139,7 @@ let spineSkeletonMesh: Spine.SkeletonMesh
 const assetManager = new Spine.AssetManager(`${ASSETS_PATH}/spines/`)
 assetManager.loadText('model.json')
 assetManager.loadTextureAtlas('model.atlas')
-
+// Spine lil-gui
 const spineFolder = gui.addFolder('SpineFolder')
 spineFolder.add({ wind: 0 }, 'wind', -20, 20, 0.1).onChange((value: number) => {
   if (!spineSkeletonMesh) return
@@ -131,6 +148,24 @@ spineFolder.add({ wind: 0 }, 'wind', -20, 20, 0.1).onChange((value: number) => {
     constraint.wind = value
   })
 })
+spineFolder
+  .add({ positionX: 1.5 }, 'positionX', -10, 10, 0.001)
+  .onChange((value: number) => {
+    if (!spineSkeletonMesh) return
+    spineSkeletonMesh.position.x = value
+  })
+spineFolder
+  .add({ positionY: 2.5 }, 'positionY', 0, 20, 0.001)
+  .onChange((value: number) => {
+    if (!spineSkeletonMesh) return
+    spineSkeletonMesh.position.y = value
+  })
+spineFolder
+  .add({ positionZ: 2.5 }, 'positionZ', -10, 10, 0.001)
+  .onChange((value: number) => {
+    if (!spineSkeletonMesh) return
+    spineSkeletonMesh.position.z = value
+  })
 
 // OrbitController
 const orbitController = new OrbitControls(camera, renderer.domElement)
