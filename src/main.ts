@@ -1,7 +1,6 @@
 import './reset.css'
 import * as THREE from 'three'
 import * as Spine from '@esotericsoftware/spine-threejs'
-import { GLTFLoader, type GLTF } from 'three/addons/loaders/GLTFLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GUI } from 'lil-gui'
 import { setResizeEvent } from '~/utils/resizeWindow/resizeWindow'
@@ -53,7 +52,7 @@ const ambientLight = new THREE.AmbientLight(0xffffff, 1.0)
 scene.add(ambientLight)
 
 // スポットライト
-const spotLight = new THREE.SpotLight(0xffffff, 24, 12, Math.PI / 4, 10, 0.5)
+const spotLight = new THREE.SpotLight(0xffffff, 48, 12, Math.PI / 4, 10, 0.5)
 spotLight.position.set(0, 8, 0)
 spotLight.castShadow = true
 spotLight.shadow.mapSize.set(4096, 4096)
@@ -69,6 +68,11 @@ spotLightFolder
     spotLight.color = new THREE.Color(value)
   })
 spotLightFolder
+  .add({ intensity: 48 }, 'intensity', 12, 200, 0.1)
+  .onChange((value: number) => {
+    spotLight.intensity = value
+  })
+spotLightFolder
   .add({ showLight: true }, 'showLight')
   .onChange((value: boolean) => {
     ambientLight.visible = value
@@ -79,52 +83,20 @@ spotLightFolder
     spotLightHepler.visible = value
   })
 
-// サンプルテクスチャ
-const textureloader = new THREE.TextureLoader()
-const sampleTexture = textureloader.load(`${ASSETS_PATH}/models/texture.jpg`)
-
 // サンプル立方体
-const boxGeometry = new THREE.BoxGeometry(3, 3, 3)
+const boxGeometry = new THREE.BoxGeometry(1, 1, 1)
 const boxMaterial = new THREE.MeshStandardMaterial({
-  map: sampleTexture,
   metalness: 0.75,
   roughness: 0
 })
 const box = new THREE.Mesh(boxGeometry, boxMaterial)
-box.position.set(0, 1.5, 0)
+box.position.set(-1.5, 3, 0)
 box.castShadow = true
 scene.add(box)
-
-// gltf オブジェクト
-let gltfObject: GLTF
-const gltfLoader = new GLTFLoader()
-gltfLoader.load(`${ASSETS_PATH}/models/boombox.glb`, (data) => {
-  gltfObject = data
-  gltfObject.scene.traverse((child) => {
-    child.castShadow = true
-  })
-  gltfObject.scene.scale.set(100, 100, 100)
-  gltfObject.scene.position.set(-4, 1, 0)
-
-  scene.add(gltfObject.scene)
-
-  const gltfObjectHelper = new THREE.BoxHelper(gltfObject.scene, 0xffff00)
-  scene.add(gltfObjectHelper)
-})
 
 // Spine
 let isAddedSpine = false
 let spineSkeletonMesh: Spine.SkeletonMesh
-const spineWrapperGeometry = new THREE.BoxGeometry(5, 5, 0.1)
-const spineWrapperMaterial = new THREE.MeshStandardMaterial({
-  wireframe: true
-})
-const spineWrapperMesh = new THREE.Mesh(
-  spineWrapperGeometry,
-  spineWrapperMaterial
-)
-spineWrapperMesh.position.set(5.5, 2.5, 0)
-scene.add(spineWrapperMesh)
 
 // Spine Asset Manager
 const assetManager = new Spine.AssetManager(`${ASSETS_PATH}/spines/`)
@@ -193,28 +165,25 @@ const ticker = () => {
           parameters.alphaTest = 0.001
         }
       )
-
-      // spine skeleton のサイズ
+      // spine skeleton の調整
       const skeletonWidth = skeletonData.width
       const skeletonHeight = skeletonData.height
       const skeletonAspectRatio = skeletonWidth / skeletonHeight
-      // (ラッパー Mesh のサイズ / spine skeleton のサイズ) * Spine データのアスペクト比 …を計算して、ラッパー Mesh 内に収めています
       spineSkeletonMesh.scale.set(
         (5 / skeletonWidth) * skeletonAspectRatio,
         5 / skeletonHeight,
         0
       )
-      spineSkeletonMesh.position.set(0, 5 * -0.5, 0)
-
-      // TODO: spine skeleton に影を適用したい
+      spineSkeletonMesh.rotation.x = -Math.PI / 2
+      spineSkeletonMesh.position.set(1.5, 2.5, 2.5)
+      spineSkeletonMesh.castShadow = true
 
       spineSkeletonMesh.state.setAnimation(0, 'animation', true)
-      spineWrapperMesh.add(spineSkeletonMesh)
+      scene.add(spineSkeletonMesh)
     }
     isAddedSpine = true
   }
 
-  // サンプル立方体の回転
   box.rotation.x += 0.01
   box.rotation.y += 0.01
   box.rotation.z += 0.01
