@@ -5,9 +5,9 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { GUI } from 'lil-gui'
 import { setResizeEvent } from '~/utils/resizeWindow/resizeWindow'
 
-const VITE_GITHUB_PAGES_PATH = import.meta.env.BASE_URL || '/'
-const IS_PROD = import.meta.env.PROD
-const ASSETS_PATH = IS_PROD ? `${VITE_GITHUB_PAGES_PATH}/assets` : `/assets`
+const VITE_GITHUB_PAGES_PATH =
+  import.meta.env.BASE_URL !== '/' ? `${import.meta.env.BASE_URL}` : ''
+const ASSETS_PATH = `${VITE_GITHUB_PAGES_PATH}/assets`
 
 const width = window.innerWidth || 800
 const height = window.innerHeight || 600
@@ -196,7 +196,9 @@ const ticker = () => {
       )
       spineSkeletonMesh.rotation.x = -Math.PI / 2
       spineSkeletonMesh.position.set(1.5, 2.5, 2.5)
-      spineSkeletonMesh.castShadow = true
+      // TODO: 立方体と同じように影をつけられるようにしたい
+      // spineSkeletonMesh.castShadow = true
+      // spineSkeletonMesh.receiveShadow = true
 
       spineSkeletonMesh.state.setAnimation(0, 'animation', true)
       scene.add(spineSkeletonMesh)
@@ -204,7 +206,7 @@ const ticker = () => {
     isAddedSpine = true
   }
 
-  // box 回転
+  // 立方体 回転
   box.rotation.x += 0.01
   box.rotation.y += 0.01
   box.rotation.z += 0.01
