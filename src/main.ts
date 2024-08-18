@@ -232,8 +232,8 @@ const ticker = () => {
       spineSkeletonMesh.rotation.x = -Math.PI / 2
       spineSkeletonMesh.position.set(1.5, 2.5, 2.5)
       // TODO: 立方体と同じように影をつけられるようにしたい
-      // spineSkeletonMesh.castShadow = true
-      // spineSkeletonMesh.receiveShadow = true
+      spineSkeletonMesh.castShadow = true // ?
+      spineSkeletonMesh.receiveShadow = true // ?
 
       spineSkeletonMesh.state.setAnimation(0, 'animation', true)
       scene.add(spineSkeletonMesh)
