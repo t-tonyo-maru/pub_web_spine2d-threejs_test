@@ -20,8 +20,8 @@
     "vitest": "^1.6.0"
   },
   "dependencies": {
-    "@esotericsoftware/spine-threejs": "^4.2.58",
+    "@esotericsoftware/spine-threejs": "^4.2.67",
     "lil-gui": "^0.19.2",
-    "three": "^0.167.1"
+    "three": "^0.171.0"
   }
 }
